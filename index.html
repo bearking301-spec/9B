@@ -1,7 +1,7 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
+    <meta charset="UTF-8">
     <title>Happy Women's Day</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
@@ -10,26 +10,42 @@
             height: 100vh; margin: 0; background-color: #fff0f5; 
             font-family: 'Arial', sans-serif; overflow: hidden; text-align: center;
         }
+
+        /* Canvas làm nền phía sau */
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1; /* Đẩy xuống dưới cùng */
+        }
+
         .container {
-            background: white;
+            background: rgba(255, 255, 255, 0.9); /* Làm nền trắng hơi trong suốt */
             padding: 30px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            z-index: 1;
+            max-width: 90%;
         }
-        /* Style cho ảnh */
+
         .profile-pic {
-            width: 960px;
-            height: 540px;
-            border-radius: 10%; /* Làm ảnh hình tròn */
+            width: 100%;
+            max-width: 600px; /* Điều chỉnh lại kích thước cho cân đối */
+            height: auto;
+            border-radius: 15px;
             object-fit: cover;
             border: 5px solid #ffc0cb;
             margin-bottom: 20px;
         }
-        h1 { color: #d81b60; font-size: 40px; margin: 10px 0; }
+
+        h1 { color: #d81b60; font-size: clamp(24px, 5vw, 40px); margin: 10px 0; }
         p { color: #ad1457; font-size: 18px; }
     </style>
 </head>
 <body>
+
+    <canvas id="matrix-canvas"></canvas>
+
     <div class="container">
         <img src="z7580409121896_2b287f880e1e25ee08bd45b675ed63ea.jpg" alt="Women's Day" class="profile-pic">
         
@@ -38,15 +54,59 @@
     </div>
 
     <script>
-        // Hiệu ứng pháo hoa khi vừa mở trang
+        // --- PHẦN 1: HIỆU ỨNG PHÁO HOA ---
         confetti({
           particleCount: 150,
           spread: 70,
           origin: { y: 0.6 }
         });
+
+        // --- PHẦN 2: HIỆU ỨNG MƯA CHỮ (MATRIX) ---
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.height = window.innerHeight;
+
+        // Các ký tự: Thêm icon tim và hoa cho lãng mạn
+        const characters = "8/3HAPPYWOMAN'SDAY";
+        const charArray = characters.split("");
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+
+        for (let i = 0; i < columns; i++) {
+            drops[i] = 1;
+        }
+
+        function drawMatrix() {
+            // Nền đen nhạt dần tạo hiệu ứng trail
+            ctx.fillStyle = "rgba(255, 240, 245, 0.1)"; // Màu nền hồng nhạt cực loãng
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = "#ff69b4"; // Màu chữ hồng (Hot Pink)
+            ctx.font = fontSize + "px arial";
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = charArray[Math.floor(Math.random() * charArray.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 50);
+
+        window.addEventListener('resize', () => {
+            
+            canvas.height = window.innerHeight;
+        });
     </script>
 </body>
 </html>
+
 
 
 
