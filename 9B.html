@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Happy Women's Day</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body { 
+            display: flex; justify-content: center; align-items: center; 
+            height: 100vh; margin: 0; background-color: #fff0f5; 
+            font-family: 'Arial', sans-serif; overflow: hidden; text-align: center;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        /* Style cho ảnh */
+        .profile-pic {
+            width: 1920px;
+            height: 1080px;
+            border-radius: 10%; /* Làm ảnh hình tròn */
+            object-fit: cover;
+            border: 5px solid #ffc0cb;
+            margin-bottom: 20px;
+        }
+        h1 { color: #d81b60; font-size: 40px; margin: 10px 0; }
+        p { color: #ad1457; font-size: 18px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="z7580409121896_2b287f880e1e25ee08bd45b675ed63ea.jpg" alt="Women's Day" class="profile-pic">
+        
+        <h1>🌸 Happy Women's Day! 🌸</h1>
+        <p>Chúc các bạn một ngày thật rạng rỡ và hạnh phúc!</p>
+    </div>
+
+    <script>
+        // Hiệu ứng pháo hoa khi vừa mở trang
+        confetti({
+          particleCount: 150,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+    </script>
+</body>
+</html>
