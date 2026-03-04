@@ -11,93 +11,139 @@
             font-family: 'Arial', sans-serif; overflow: hidden; text-align: center;
         }
 
-        /* Canvas làm nền phía sau */
         #matrix-canvas {
             position: fixed;
             top: 0;
             left: 0;
-            z-index: -1; /* Đẩy xuống dưới cùng */
+            z-index: -1;
+        }
+
+        /* Lớp phủ mở quà để kích hoạt nhạc */
+        #overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #ffc0cb;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            z-index: 9999;
+            transition: 0.5s;
+        }
+
+        .open-btn {
+            padding: 15px 30px;
+            font-size: 20px;
+            background: #d81b60;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.9); /* Làm nền trắng hơi trong suốt */
-            padding: 30px;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 20px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             z-index: 1;
             max-width: 90%;
+            display: none; /* Hiện ra sau khi bấm nút */
         }
 
-        .profile-pic {
-            width: 100%;
-            max-width: 600px; /* Điều chỉnh lại kích thước cho cân đối */
-            height: auto;
-            border-radius: 15px;
-            object-fit: cover;
-            border: 5px solid #ffc0cb;
+        /* Bố cục 2 ảnh */
+        .photo-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
             margin-bottom: 20px;
         }
 
-        h1 { color: #d81b60; font-size: clamp(24px, 5vw, 40px); margin: 10px 0; }
-        p { color: #ad1457; font-size: 18px; }
+        .profile-pic {
+            width: 45%;
+            max-width: 300px;
+            min-width: 150px;
+            height: auto;
+            border-radius: 15px;
+            object-fit: cover;
+            border: 4px solid #ffc0cb;
+        }
+
+        h1 { color: #d81b60; font-size: clamp(20px, 5vw, 35px); margin: 10px 0; }
+        p { color: #ad1457; font-size: 16px; }
     </style>
 </head>
 <body>
 
+    <div id="overlay">
+        <h2 style="color: #d81b60;">Bạn có một món quà bất ngờ! 🌸</h2>
+        <button class="open-btn" onclick="startExperience()">Bấm để mở quà 🎁</button>
+    </div>
+
     <canvas id="matrix-canvas"></canvas>
 
-    <div class="container">
-        <img src="z7580409121896_2b287f880e1e25ee08bd45b675ed63ea.jpg" alt="Women's Day" class="profile-pic">
-        <img src="0f830d3f-25f6-4671-aa1a-f5e9fc527a63.jfif" alt="Women's Day" class="profile-pic">
+    <audio id="bg-music" loop>
+        <source src="Em Ellata - Ngày ấy (Yesterday).mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container" id="main-content">
+        <div class="photo-group">
+            <img src="z7580409121896_2b287f880e1e25ee08bd45b675ed63ea.jpg" alt="Photo 1" class="profile-pic">
+            <img src="0f830d3f-25f6-4671-aa1a-f5e9fc527a63.jfif" alt="Photo 2" class="profile-pic">
+        </div>
+        
         <h1>🌸 Happy Women's Day! 🌸</h1>
-        <p>Chúc các bạn một ngày thật rạng rỡ và hạnh phúc!</p>
+        <p>chúng em xin gửi đến cô lời chúc mừng và lời cảm ơn sâu sắc. Chúc cô luôn xinh đẹp, mạnh khỏe và thành công trong sự nghiệp trồng người. Chúc các bạn nữ luôn rạng rỡ, tự tin và học giỏi!</p>
     </div>
 
     <script>
-        // --- PHẦN 1: HIỆU ỨNG PHÁO HOA ---
-        confetti({
-          particleCount: 150,
-          spread: 70,
-          origin: { y: 0.6 }
-        });
+        function startExperience() {
+            // Ẩn lớp phủ và hiện nội dung
+            document.getElementById('overlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+            }, 500);
 
-        // --- PHẦN 2: HIỆU ỨNG MƯA CHỮ (MATRIX) ---
+            // Phát nhạc
+            const music = document.getElementById('bg-music');
+            music.play();
+
+            // Hiệu ứng pháo hoa
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+
+        // --- MATRIX EFFECT ---
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
-
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        // Các ký tự: Thêm icon tim và hoa cho lãng mạn
-        const characters = "8/3HAPPYWOMANSDAY";
+        const characters = "8/3HAPPYWOMAN'SDAY🌸❤️";
         const charArray = characters.split("");
         const fontSize = 16;
         const columns = canvas.width / fontSize;
-        const drops = [];
-
-        for (let i = 0; i < columns; i++) {
-            drops[i] = 1;
-        }
+        const drops = Array(Math.floor(columns)).fill(1);
 
         function drawMatrix() {
-            // Nền đen nhạt dần tạo hiệu ứng trail
-            ctx.fillStyle = "rgba(255, 240, 245, 0.1)"; // Màu nền hồng nhạt cực loãng
+            ctx.fillStyle = "rgba(255, 240, 245, 0.1)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = "#ff69b4"; // Màu chữ hồng (Hot Pink)
+            ctx.fillStyle = "#ff69b4";
             ctx.font = fontSize + "px arial";
 
             for (let i = 0; i < drops.length; i++) {
                 const text = charArray[Math.floor(Math.random() * charArray.length)];
                 ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
                 if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
                     drops[i] = 0;
                 }
                 drops[i]++;
             }
         }
-
         setInterval(drawMatrix, 50);
 
         window.addEventListener('resize', () => {
@@ -107,6 +153,7 @@
     </script>
 </body>
 </html>
+
 
 
 
