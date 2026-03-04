@@ -65,10 +65,11 @@
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
 
+        canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
         // Các ký tự: Thêm icon tim và hoa cho lãng mạn
-        const characters = "8/3HAPPYWOMAN'SDAY";
+        const characters = "8/3HAPPYWOMANSDAY";
         const charArray = characters.split("");
         const fontSize = 16;
         const columns = canvas.width / fontSize;
@@ -100,7 +101,7 @@
         setInterval(drawMatrix, 50);
 
         window.addEventListener('resize', () => {
-            
+            canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         });
     </script>
